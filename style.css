@@ -1,0 +1,135 @@
+.btn, a, button, textarea,
+.btn-primary,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-success,
+.btn-success:focus,
+.btn-success:active,
+input,
+input:focus,
+input:active
+{
+    outline: none;
+    
+}
+
+.game-card {
+    
+    margin: 100px 0;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #game{
+    display: none;
+  }
+
+  .btn-block{
+    /* display:block; */
+    opacity: 1;
+    transition:
+    opacity 0.5s ease-in 0.5s,
+    width 0.5s ease,
+    height 0.5s ease;  
+  }
+
+  .btn-hidden {
+    /* display:none; */
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition:
+      opacity 0.5s ease-out,
+      width 0.5s ease 0.5s,
+      height 0.5s ease 0.5s;
+  }
+
+  .btn-width{
+    width: 200px;
+    
+  }
+
+  .col-md-4{
+    max-width: 220px;
+  }
+
+  .hiddenGameBtn{
+    visibility: hidden;
+    /* width: 0;
+    height: 0; */
+    opacity: 0;
+    transition:
+    all 0.5s ease-in 0.5s;
+
+  }
+  
+  .visibleMy{
+    /* background-color: aqua; */
+    visibility:visible;
+    opacity: 1;
+    transition:
+    all 0.5s ease-in 0.5s;
+     
+  }
+  .hiddenMy{
+    visibility: hidden;
+    /* width: 0;
+    height: 0; */
+    opacity: 0;
+    transition:
+    all 0.5s linear 0.5s;
+
+  }
+
+
+.openGame {
+    transition:
+    all 0.5s ease-in;
+}
+
+.goBtn{
+    display: none;
+
+}
+
+#inputs{
+    display: none;
+    padding-top: 80px;
+}
+
+.boldText{
+    font-weight: 600;
+    font-size: 20px;
+    background-color: rgb(253, 226, 175);
+	box-shadow: -10px 0 0 rgb(253, 226, 175), 10px 0 0 rgb(253, 226, 175);
+}
+
+.subText{
+    font-weight: 400;
+    font-size: 13px;
+}
+.fillNumb{
+    
+    background-color: rgb(253, 226, 175);
+	/* box-shadow: -10px 0 0 rgb(253, 226, 175), 10px 0 0 rgb(253, 226, 175); */
+}
+
+
+/* intro
+================================ */
+
+/* 
+
+.intro__title {
+    font-weight: bold;
+    font-size: 45px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 50px;
+
+}
+
+.intro__btn{
+    text-align: center;
+} */
