@@ -15,7 +15,7 @@ let maxValueUser;
 let answerNumber;
 let answerNumberText;
 
-let orderNumber = 1;
+let orderNumber = 0;
 let gameRun = true;
 
 const orderNumberField = document.getElementById('orderNumberField');
@@ -60,15 +60,25 @@ function valid (event){
         maxValue;
 
   
-    
+    // Проверка на одинаковость чисел и сообщение
+
     (minValue == maxValue) ? 
         document.getElementById('textToStart').innerHTML="<strong class='fillText'>Ну короче, мы имеем числа <span class='fillNumb'>" + minValue + "</span> и <span class='fillNumb'>" + maxValue + "</span></strong><br><p class='subText'>Хотя, я считаю странным брать одинаковые числа, но как хотите</p>" :
 
         document.getElementById('textToStart').innerHTML="<strong class='fillText'>Ну короче, мы имеем числа <span class='fillNumb'>" + minValue + "</span> и <span class='fillNumb'>" + maxValue + "</span></strong><br><p class='subText'>Теперь загадайте любое целое число между ними и я удивлю вас своей дедукцией</p>";
 
+    // Проверка, если числа перептаны местами и перестановка местами
+
+    if (minValue > maxValue) {
+        [minValue,maxValue] = [maxValue,minValue];
+        document.getElementById('minWrong').innerHTML = `Не путаем, пожалуйста! Сюда минимальное ${minValue},`;
+        document.getElementById('maxWrong').innerHTML = `а сюда максимальное ${maxValue}`;
+        document.getElementById('textToStart').innerHTML="<strong class='fillText'>Теперь мы имеем числа <span class='fillNumb'>" + minValue + "</span> и <span class='fillNumb'>" + maxValue + "</span></strong><br><p class='subText'>Теперь загадайте любое целое число между ними и я удивлю вас своей дедукцией</p>";
+    }
+
     textToStart.classList.add('lead');
     event.preventDefault();
-        console.log(`функция проверки valid: minValue=${minValue}, maxValu=${maxValue}`);
+        // console.log(`функция проверки valid: minValue=${minValue}, maxValu=${maxValue}`);
 };
 
 //  ================= /ФУНКЦИЯ ПРОВЕРКИ
@@ -137,7 +147,7 @@ $( document ).ready(function(){
         
         event.preventDefault();
           
-        firstStep (); // запускаем расчет игры
+        // firstStep (); // запускаем расчет игры
         document.getElementById('textToStart').innerHTML="<strong class='fillText'>Ну теперь все заново</strong> <br> Правила те же: не меньше -999 и не больше 999!";
         textToStart.classList.remove('lead');
         document.getElementById('maxWrong').innerHTML = '';
@@ -152,7 +162,7 @@ $( document ).ready(function(){
 
 
 // Кнопка заново ============================
-document.getElementById('btnRetry').addEventListener('click', firstStep); 
+// document.getElementById('btnRetry').addEventListener('click', firstStep); 
 
 
 // ПЕРВЫЙ РАСЧЕТ ИГРЫ =======================
@@ -168,14 +178,15 @@ function firstStep () {
     orderNumber = 1;
     gameRun = true;
     money = answerNumber + "";
-        console.log(`firstStep перед num2str: minValue=${minValue}, maxValu=${maxValue}, orderNumber=${orderNumber}, answerNumber= ${answerNumber }, money= ${money} (${typeof(money)}), answerNumberText= ${answerNumberText}`);
+        // console.log(`#${orderNumber} firstStep перед num2str: minValue=${minValue}, maxValu=${maxValue}, answerNumber= ${answerNumber }, money= ${money} (${typeof(money)}), answerNumberText= ${answerNumberText}`);
+        
     num2str (money);
     changeOrderNumber ();
     // orderNumberField.innerText = `${orderNumber} \n Вы задали числа ${minValueUser} и ${maxValueUser}`; удалить в конце
     answerNumberField.innerText = `${answerNumberText}?`;
     answerField.innerText = `Вы загадали число \n`;
-    
-        console.log(`Функция firstStep конец: minValue=${minValue}, maxValu=${maxValue}, orderNumber=${orderNumber}, answerNumber= ${answerNumber }, money= ${money} (${typeof(money)}), answerNumberText= ${answerNumberText}`);
+         console.log(`#${orderNumber} firstStep: \n minValue=${minValue}, maxValu=${maxValue}, answerNumber= ${answerNumber }`); 
+        // console.log(`Функция firstStep конец: minValue=${minValue}, maxValu=${maxValue}, orderNumber=${orderNumber}, answerNumber= ${answerNumber }, money= ${money} (${typeof(money)}), answerNumberText= ${answerNumberText}`);
 }
 // ====================== /ПЕРВЫЙ РАСЧЕТ ИГРЫ 
 
@@ -187,26 +198,26 @@ function changeOrderNumber () {
 
 document.getElementById('btnOver').addEventListener('click', function () {
     if (gameRun){
-        if (minValue === maxValue)
-            {wrongAnswers();
+        if (minValue === maxValue || maxValue === answerNumber){
+            wrongAnswers(); // функция неверного ответа при равенстве аргументов
             
         } else {
-            minValue = answerNumber  + 1;
-            answerNumber  = Math.floor((minValue + maxValue) / 2);
-            orderNumber++;
-            money = answerNumber + "";
-            num2str (money);
-            changeOrderNumber ();
-            answerField.innerText = guessAnswers(); 
-             
-                console.log(`После нажатия кнопки больше: minValue=${minValue}, maxValu=${maxValue}, orderNumber=${orderNumber}, answerNumber= ${answerNumber }`);
+            minValue = answerNumber + 1; // переходим в большую половину
+            answerNumber  = Math.floor((minValue + maxValue) / 2); // Ищем центр
+            orderNumber++; // +1 к попытке
+            money = answerNumber + ""; // заводим число в переменную для функции прописи
+            num2str (money); // функция перевода числа в строку
+            changeOrderNumber (); // функция изменения текста номера попытки
+            answerField.innerText = guessAnswers(); // разные текста для подставновки
+                console.log(`#${orderNumber} btnOver: \n minValue=${minValue}, maxValu=${maxValue}, answerNumber= ${answerNumber }`);
         }
     }
 })
 
 document.getElementById('btnLess').addEventListener('click', function () {
     if (gameRun){
-        if (minValue === maxValue){wrongAnswers();
+        if (minValue === maxValue || minValue === answerNumber){
+            wrongAnswers(); // функция неверного ответа при равенстве аргументов
 
         } else {
             maxValue = answerNumber - 1;
@@ -215,9 +226,8 @@ document.getElementById('btnLess').addEventListener('click', function () {
             money = answerNumber + "";
             num2str (money); 
             changeOrderNumber ();
-            answerField.innerText = guessAnswers();//`Вы загадали число ${answerNumber }?`;
-            
-            console.log(`После нажатия кнопки меньше: minValue=${minValue}, maxValu=${maxValue}, orderNumber=${orderNumber}, answerNumber= ${answerNumber }`);
+            answerField.innerText = guessAnswers();//
+                console.log(`#${orderNumber} btnLess: \n minValue=${minValue}, maxValu=${maxValue}, answerNumber= ${answerNumber }`);
         }
     }
 })
@@ -289,15 +299,15 @@ document.getElementById('btnEqual').addEventListener('click', function () {
      ru == "Ноль " && ko != "" ? res = ko : 0;
      answerNumberText = 0;
 
-        console.log(`num2str: minValue=${minValue}, maxValu=${maxValue}, orderNumber=${orderNumber}, answerNumber= ${answerNumber }, money= ${money} (${typeof(money)}), answerNumberText= ${answerNumberText}`);
+        // console.log(`num2str: minValue=${minValue}, maxValu=${maxValue}, orderNumber=${orderNumber}, answerNumber= ${answerNumber }, money= ${money} (${typeof(money)}), answerNumberText= ${answerNumberText}`);
 
-        console.log(`num2str Резалт: (${minus} + ${res}).substr(0, 1).toUpperCase() + ${(minus + res).substr(1)}`);
-        console.log(`num2str Резалт:`, (minus + res).substr(0, 1).toUpperCase() + (minus + res).substr(1));
+        // console.log(`num2str Резалт: (${minus} + ${res}).substr(0, 1).toUpperCase() + ${(minus + res).substr(1)}`);
+        // console.log(`num2str Резалт:`, (minus + res).substr(0, 1).toUpperCase() + (minus + res).substr(1));
 
      answerNumberText = document.getElementById('str').innerHTML = (minus + res).substr(0, 1).toUpperCase() + (minus + res).substr(1);
     //  answerNumberText = document.getElementById('str').innerHTML = (minus + res).substr(0, 1).toUpperCase() + (minus + res).substr(1);
      
-        console.log('Результат перевода в текст ', money, answerNumberText);
+        // console.log('Результат перевода в текст ', money, answerNumberText);
      
     //  document.getElementById('str2').innerHTML = (minus + res).substr(0, 1).toUpperCase() + (minus + res).substr(1);;
 
@@ -353,7 +363,7 @@ function guessAnswers () {
         guessPhrase = `Зуб даю ты гадал число \n`;
         }
     
-        console.log(`Функция guessAnswers: guessRandom=${guessRandom}, guessPhrase=${guessPhrase}, answerNumber= ${answerNumber }`);
+        // console.log(`Функция guessAnswers: guessRandom=${guessRandom}, guessPhrase=${guessPhrase}, answerNumber= ${answerNumber }`);
         //answerField.innerText = guessPhrase;
     return guessPhrase;
 }
@@ -377,7 +387,7 @@ function wrongAnswers (){
                     answerPhrase = `Ну и играй сам, если жульничаешь`;
                     }
             
-            console.log(`Сравнялись при меньше phraseRandom=${phraseRandom}, answerPhrase=${answerPhrase}, answerNumber= ${answerNumber }`);
+            // console.log(`Сравнялись при меньше phraseRandom=${phraseRandom}, answerPhrase=${answerPhrase}, answerNumber= ${answerNumber }`);
             answerField.innerText = answerPhrase;
             cardBody.style.display = "none";
 
@@ -402,7 +412,7 @@ function winAnswers (){
                     answerPhrase = `Кто молодец? Я молодец!`;
                     }
             
-            console.log(`Сравнялись при меньше phraseRandom=${phraseRandom}, answerPhrase=${answerPhrase}, answerNumber= ${answerNumber }`);
+            // console.log(`Сравнялись при меньше phraseRandom=${phraseRandom}, answerPhrase=${answerPhrase}, answerNumber= ${answerNumber }`);
             answerField.innerText = answerPhrase;
             cardBody.style.display = "none";
 
